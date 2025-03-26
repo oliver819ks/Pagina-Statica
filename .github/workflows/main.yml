@@ -1,4 +1,3 @@
-
 name: Deploy Website
 
 on:
@@ -12,25 +11,8 @@ permissions:
   id-token: write
 
 jobs:
-  validate-html:
+  build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v3
-
-      - name: Instalar HTMLHint
-        run: npm install -g htmlhint
-
-      - name: Validar HTML
-        run: htmlhint . || true
-
-  deploy:
-    needs: validate-html
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Checkout del código
         uses: actions/checkout@v3
@@ -38,8 +20,19 @@ jobs:
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v3
 
-      - name: Publicar en GitHub Pages
-        uses: actions/upload-pages-artifact@v2  
+      - name: Subir archivos de la página
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: .  # Usa el directorio raíz para publicar todo
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       - name: Desplegar en GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1
