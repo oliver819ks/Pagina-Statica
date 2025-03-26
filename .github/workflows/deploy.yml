@@ -1,6 +1,13 @@
 name: Deploy Website
 
-on: push
+on: 
+  push:
+    branches:
+      - main 
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   validate-html:
