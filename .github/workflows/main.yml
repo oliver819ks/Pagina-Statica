@@ -5,13 +5,20 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
-  build:
+  validate-html:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Validar HTML
+        uses: Cyb3r-Jak3/html5-validator-action@v1
+        with:
+          file: index.html
+
+  deploy:
+    needs: validate-html
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del código
@@ -20,19 +27,5 @@ jobs:
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v3
 
-      - name: Subir archivos de la página
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: .  # Usa el directorio raíz para publicar todo
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Desplegar en GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+      - name: Publicar en GitHub Pages
+        uses: actions/upload-pages-artifact@v2
