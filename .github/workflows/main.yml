@@ -15,7 +15,7 @@ jobs:
       - name: Validar HTML
         uses: Cyb3r-Jak3/html5-validator-action@v1
         with:
-          file: index.html
+          files: index.html  # Cambié 'file' por 'files'
 
   deploy:
     needs: validate-html
